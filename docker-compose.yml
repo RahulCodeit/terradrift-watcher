@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  terradrift-watcher:
+    # Build from local Dockerfile
+    build: .
+    # Or use pre-built image:
+    # image: yourusername/terradrift-watcher:latest
+    
+    container_name: terradrift-watcher
+    
+    # Mount configuration and terraform projects
+    volumes:
+      # Configuration file
+      - ./config.yml:/config/config.yml:ro
+      
+      # Terraform projects (adjust paths as needed)
+      - ./terraform-projects:/terraform:ro
+      
+      # Optional: Mount .terraform cache for faster runs
+      # - terraform-cache:/terraform/.terraform
+    
+    # Environment variables for cloud authentication
+    environment:
+      # AWS
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
+      
+      # Azure
+      - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
+      - AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET}
+      - AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID}
+      - AZURE_TENANT_ID=${AZURE_TENANT_ID}
+      
+      # GCP
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
+      
+      # Tool configuration
+      - TF_LOG=${TF_LOG:-ERROR}
+      - TF_IN_AUTOMATION=true
+    
+    # Command to run
+    command: ["run", "--config", "/config/config.yml"]
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Resource limits (optional)
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # Optional: Run as a one-time job
+  terradrift-check:
+    build: .
+    # image: yourusername/terradrift-watcher:latest
+    profiles: ["check"]
+    volumes:
+      - ./config.yml:/config/config.yml:ro
+      - ./terraform-projects:/terraform:ro
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    command: ["run", "--config", "/config/config.yml", "--once"]
+
+# Optional: Named volume for Terraform cache
+volumes:
+  terraform-cache: 

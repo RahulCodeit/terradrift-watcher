@@ -1,0 +1,108 @@
+# TerraDrift Watcher Configuration Example
+# Copy this file to config.yml and customize for your environment
+
+# Optional: Check interval for scheduled runs (e.g., "30m", "1h")
+check_interval: "1h"
+
+# Authentication profiles for different cloud providers
+auth_profiles:
+  # AWS Production Profile
+  - name: aws-prod
+    provider: aws
+    config:
+      access_key_id: ${AWS_ACCESS_KEY_ID}
+      secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+      region: us-east-1
+
+  # AWS Development Profile
+  - name: aws-dev
+    provider: aws
+    config:
+      access_key_id: ${AWS_DEV_ACCESS_KEY_ID}
+      secret_access_key: ${AWS_DEV_SECRET_ACCESS_KEY}
+      region: us-west-2
+
+  # Azure Production Profile
+  - name: azure-prod
+    provider: azure
+    config:
+      client_id: ${AZURE_CLIENT_ID}
+      client_secret: ${AZURE_CLIENT_SECRET}
+      subscription_id: ${AZURE_SUBSCRIPTION_ID}
+      tenant_id: ${AZURE_TENANT_ID}
+
+  # GCP Production Profile
+  - name: gcp-prod
+    provider: gcp
+    config:
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}
+      GOOGLE_CLOUD_PROJECT: ${GCP_PROJECT_ID}
+
+# Notification channels
+notifiers:
+  # Slack notification for operations team
+  - name: slack-ops
+    type: slack
+    config:
+      webhook_url: ${SLACK_WEBHOOK_URL}
+    enabled: true
+
+  # Microsoft Teams notification for infrastructure team
+  - name: teams-infra
+    type: teams
+    config:
+      webhook_url: ${TEAMS_WEBHOOK_URL}
+    enabled: false  # Set to true when Teams webhook is configured
+
+  # Email notifications (not yet implemented)
+  - name: email-alerts
+    type: email
+    config:
+      smtp_host: smtp.gmail.com
+      smtp_port: "587"
+      from: alerts@example.com
+      to: team@example.com
+    enabled: false
+
+# Terraform projects to monitor
+projects:
+  # AWS Production VPC
+  - name: aws-prod-vpc
+    path: ./terraform/aws/prod/vpc
+    auth_profile: aws-prod
+    notifiers:
+      - slack-ops
+    enabled: true
+
+  # AWS Production EKS Cluster
+  - name: aws-prod-eks
+    path: ./terraform/aws/prod/eks
+    auth_profile: aws-prod
+    notifiers:
+      - slack-ops
+      - teams-infra
+    enabled: true
+
+  # AWS Development VPC
+  - name: aws-dev-vpc
+    path: ./terraform/aws/dev/vpc
+    auth_profile: aws-dev
+    notifiers:
+      - slack-ops
+    enabled: true
+
+  # Azure Production AKS Cluster
+  - name: azure-prod-aks
+    path: ./terraform/azure/prod/aks
+    auth_profile: azure-prod
+    notifiers:
+      - teams-infra
+    enabled: false  # Set to true when ready to monitor
+
+  # GCP Production GKE Cluster
+  - name: gcp-prod-gke
+    path: ./terraform/gcp/prod/gke
+    auth_profile: gcp-prod
+    notifiers:
+      - slack-ops
+    enabled: false  # Set to true when ready to monitor 

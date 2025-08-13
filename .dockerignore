@@ -1,0 +1,17 @@
+# Exclude unnecessary files from Docker build
+*.exe
+*.log
+*.tmp
+.git
+.gitignore
+releases/
+test-*
+*.md
+!README.md
+Dockerfile
+docker-compose.yml
+.dockerignore
+build.bat
+create-release.ps1
+INSTALL.md
+DISTRIBUTION.md 
