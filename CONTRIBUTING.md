@@ -4,9 +4,7 @@ First off, thank you for considering contributing to TerraDrift Watcher! It's pe
 
 ## Code of Conduct
 
-This project and everyone participating in it is governed by our Code of Conduct. By participating, you are expected to uphold this code. Please report unacceptable behavior to support@example.com.
-
-## How Can I Contribute?
+This project and everyone participating in it is governed by our Code of Conduct. By participating, you are expected to uphold this code. 
 
 ### Reporting Bugs
 
@@ -39,8 +37,6 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 4. Ensure the test suite passes
 5. Make sure your code follows the existing code style
 6. Issue that pull request!
-
-## Development Setup
 
 ### Prerequisites
 
@@ -149,9 +145,6 @@ Add retry logic for Slack notifications
 
 Fixes #123
 ```
-
-## Testing
-
 ### Writing Tests
 
 - Write unit tests for new functionality
@@ -199,9 +192,6 @@ func TestLoadConfig(t *testing.T) {
 5. Build binaries using `build.sh` or `build.bat`
 6. Upload binaries to the GitHub release
 
-## Questions?
-
-Feel free to open an issue with your question or reach out on our Slack channel.
 
 ## Recognition
 
