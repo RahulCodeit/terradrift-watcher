@@ -1,0 +1,9 @@
+projects:
+  - name: tf-minimal
+    path: ./tf-minimal
+    notifiers: []
+    enabled: true
+
+auth_profiles: []
+
+notifiers: [] 
