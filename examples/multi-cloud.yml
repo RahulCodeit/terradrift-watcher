@@ -1,0 +1,95 @@
+# Multi-Cloud Configuration Example
+# This example shows how to monitor AWS, Azure, and GCP projects
+
+check_interval: "2h"  # Check every 2 hours
+
+projects:
+  # AWS Projects
+  - name: aws-production-vpc
+    path: ./terraform/aws/production/vpc
+    auth_profile: aws-prod
+    notifiers: [slack-critical, email-ops]
+    enabled: true
+    
+  - name: aws-staging-vpc
+    path: ./terraform/aws/staging/vpc
+    auth_profile: aws-staging
+    notifiers: [slack-dev]
+    enabled: true
+  
+  # Azure Projects
+  - name: azure-production-aks
+    path: ./terraform/azure/production/aks
+    auth_profile: azure-prod
+    notifiers: [slack-critical, teams-infra]
+    enabled: true
+  
+  # GCP Projects
+  - name: gcp-production-gke
+    path: ./terraform/gcp/production/gke
+    auth_profile: gcp-prod
+    notifiers: [slack-critical]
+    enabled: true
+
+auth_profiles:
+  # AWS Profiles
+  - name: aws-prod
+    provider: aws
+    config:
+      access_key_id: ${AWS_PROD_ACCESS_KEY_ID}
+      secret_access_key: ${AWS_PROD_SECRET_ACCESS_KEY}
+      region: us-east-1
+      
+  - name: aws-staging
+    provider: aws
+    config:
+      access_key_id: ${AWS_STAGING_ACCESS_KEY_ID}
+      secret_access_key: ${AWS_STAGING_SECRET_ACCESS_KEY}
+      region: us-west-2
+  
+  # Azure Profile
+  - name: azure-prod
+    provider: azure
+    config:
+      client_id: ${AZURE_CLIENT_ID}
+      client_secret: ${AZURE_CLIENT_SECRET}
+      subscription_id: ${AZURE_SUBSCRIPTION_ID}
+      tenant_id: ${AZURE_TENANT_ID}
+  
+  # GCP Profile
+  - name: gcp-prod
+    provider: gcp
+    config:
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}
+      GOOGLE_CLOUD_PROJECT: ${GCP_PROJECT_ID}
+
+notifiers:
+  # Slack Channels
+  - name: slack-critical
+    type: slack
+    config:
+      webhook_url: ${SLACK_CRITICAL_WEBHOOK_URL}
+    enabled: true
+    
+  - name: slack-dev
+    type: slack
+    config:
+      webhook_url: ${SLACK_DEV_WEBHOOK_URL}
+    enabled: true
+  
+  # Microsoft Teams (Note: Not yet implemented)
+  - name: teams-infra
+    type: teams
+    config:
+      webhook_url: ${TEAMS_WEBHOOK_URL}
+    enabled: false  # Disabled until implementation
+  
+  # Email (Note: Not yet implemented)
+  - name: email-ops
+    type: email
+    config:
+      smtp_host: smtp.gmail.com
+      smtp_port: "587"
+      from: alerts@example.com
+      to: ops-team@example.com
+    enabled: false  # Disabled until implementation 

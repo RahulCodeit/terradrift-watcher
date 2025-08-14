@@ -1,0 +1,29 @@
+# Simple AWS Configuration Example
+# This example monitors a single AWS Terraform project
+
+# Projects to monitor
+projects:
+  - name: my-aws-infrastructure
+    path: ./terraform  # Path to your Terraform files
+    auth_profile: aws-main
+    notifiers:
+      - slack-alerts
+    enabled: true
+
+# AWS Authentication
+auth_profiles:
+  - name: aws-main
+    provider: aws
+    config:
+      # Use environment variables for security
+      access_key_id: ${AWS_ACCESS_KEY_ID}
+      secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+      region: us-east-1
+
+# Slack Notifications
+notifiers:
+  - name: slack-alerts
+    type: slack
+    config:
+      webhook_url: ${SLACK_WEBHOOK_URL}
+    enabled: true 
